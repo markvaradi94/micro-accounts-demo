@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  accounts:
+    container_name: micro-accounts
+    image: markvaradi94/micro-accounts:latest
+    ports:
+      - "9091:9091"
+    environment:
+      - DATABASE_HOST=accounts-db
+      - DATABASE_PORT=3306
+      - DATABASE_USER=accounts
+      - DATABASE_PASSWORD=password
+    depends_on:
+      - accounts-db
+
+  accounts-db:
+    container_name: accounts-db
+    image: mysql:8-oracle
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: accounts
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: accounts
+    ports:
+      - "3307:3306"
+    volumes:
+      - accounts-data:/var/lib/mysql
+
+volumes:
+  accounts-data:
