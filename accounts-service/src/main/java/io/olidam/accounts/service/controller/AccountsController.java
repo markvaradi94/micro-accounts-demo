@@ -1,10 +1,13 @@
 package io.olidam.accounts.service.controller;
 
+import io.olidam.accounts.service.config.AccountsConfig;
+import io.olidam.accounts.service.config.Properties;
 import io.olidam.accounts.service.model.dto.AccountDto;
 import io.olidam.accounts.service.model.dto.CustomerDto;
 import io.olidam.accounts.service.model.mapper.AccountMapper;
 import io.olidam.accounts.service.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 public class AccountsController {
     private final AccountService service;
     private final AccountMapper mapper;
+    private final AccountsConfig config;
 
     @GetMapping
     List<AccountDto> getAll() {
@@ -46,5 +50,16 @@ public class AccountsController {
         return service.delete(accountNumber)
                 .map(mapper::toApi)
                 .orElseThrow(() -> new RuntimeException("Could not find account with number %s".formatted(accountNumber)));
+    }
+
+    @SneakyThrows
+    @GetMapping("properties")
+    Properties getPropertyDetails() {
+        return Properties.builder()
+                .msg(config.getMsg())
+                .buildVersion(config.getBuildVersion())
+                .mailDetails(config.getMailDetails())
+                .activeBranches(config.getActiveBranches())
+                .build();
     }
 }
